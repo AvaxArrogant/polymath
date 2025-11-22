@@ -96,10 +96,10 @@ export default function LiveStats({ onRegisterRef }: LiveStatsProps) {
             dragListener={false}
             dragControls={dragControls}
             dragMomentum={false}
-            className="w-full max-w-2xl mx-auto mt-12 font-mono text-sm relative z-50"
+            className="w-full max-w-2xl mx-auto font-mono text-sm sticky top-4 z-40"
         >
             <div
-                className={`bg-void-black/90 border border-white/20 rounded-lg overflow-hidden shadow-2xl backdrop-blur-sm transition-all duration-300 flex flex-col ${isMinimized ? 'h-auto w-auto inline-block' : 'resize overflow-auto h-80 min-h-[200px] min-w-[300px]'}`}
+                className={`bg-void-black/90 border border-white/20 rounded-lg overflow-hidden shadow-2xl backdrop-blur-sm transition-all duration-300 flex flex-col ${isMinimized ? 'h-auto w-auto inline-block' : 'resize overflow-auto h-80 min-h-[200px] min-w-[280px]'}`}
                 style={{
                     resize: isMinimized ? 'none' : 'both',
                     height: isMinimized ? 'auto' : undefined,

@@ -26,9 +26,9 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
           (Math.random() - 0.5) * 10
         ),
         velocity: new THREE.Vector3(
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.02,
-          (Math.random() - 0.5) * 0.01
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.01,
+          (Math.random() - 0.5) * 0.005
         ),
         connections: [],
       });
@@ -46,9 +46,9 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
       positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
       velocities.push(new THREE.Vector3(
-        (Math.random() - 0.5) * 0.05,
-        (Math.random() - 0.5) * 0.05,
-        (Math.random() - 0.5) * 0.02
+        (Math.random() - 0.5) * 0.02,
+        (Math.random() - 0.5) * 0.02,
+        (Math.random() - 0.5) * 0.01
       ));
     }
 
@@ -88,13 +88,13 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
       }
 
       dummy.position.copy(node.position);
-      dummy.scale.setScalar(1 + Math.sin(time + i) * 0.2);
+      dummy.scale.setScalar(1 + Math.sin(time * 0.5 + i) * 0.1);
       dummy.updateMatrix();
       nodesRef.current!.setMatrixAt(i, dummy.matrix);
 
-      const greenColor = new THREE.Color(0x39FF14);
-      const indigoColor = new THREE.Color(0x6F00FF);
-      const color = i % 2 === 0 ? greenColor : indigoColor;
+      const greyColor = new THREE.Color(0x808080);
+      const whiteColor = new THREE.Color(0xFFFFFF);
+      const color = i % 2 === 0 ? greyColor : whiteColor;
       nodesRef.current!.setColorAt(i, color);
     });
 
@@ -108,7 +108,7 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
           );
 
           const opacity = 1 - distance / maxDistance;
-          const color = i % 2 === 0 ? new THREE.Color(0x39FF14) : new THREE.Color(0x6F00FF);
+          const color = i % 2 === 0 ? new THREE.Color(0x808080) : new THREE.Color(0xFFFFFF);
           lineColors.push(color.r * opacity, color.g * opacity, color.b * opacity);
           lineColors.push(color.r * opacity, color.g * opacity, color.b * opacity);
         }
@@ -158,7 +158,7 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
 
       <lineSegments ref={linesRef}>
         <bufferGeometry />
-        <lineBasicMaterial vertexColors transparent opacity={0.6} />
+        <lineBasicMaterial vertexColors transparent opacity={0.3} />
       </lineSegments>
 
       <points ref={particlesRef}>
@@ -172,9 +172,9 @@ function NeuralNetwork({ mousePosition, isSubmitting }: { mousePosition: { x: nu
         </bufferGeometry>
         <pointsMaterial
           size={0.05}
-          color={0x39FF14}
+          color={0xCCCCCC}
           transparent
-          opacity={0.8}
+          opacity={0.4}
           sizeAttenuation
         />
       </points>
@@ -198,7 +198,7 @@ export default function NeuralNetworkBackground({ isSubmitting = false }: { isSu
   }, []);
 
   return (
-    <div className="fixed inset-0 -z-10">
+    <div className="fixed inset-0 z-0 opacity-20">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 75 }}
         gl={{ alpha: true, antialias: true }}

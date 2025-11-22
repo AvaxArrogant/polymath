@@ -47,10 +47,10 @@ const duplicatedContent = [...contentItems, ...contentItems];
 
 export default function ContentFeed() {
   return (
-    <div className="relative w-full max-w-[280px] h-[500px] mx-auto perspective-1000">
+    <div className="relative w-full max-w-[280px] h-[500px] mx-auto perspective-1000 hidden lg:block">
       <div className="absolute inset-0 bg-gradient-to-b from-void-black via-transparent to-void-black z-10 pointer-events-none" />
 
-      <div className="relative h-full overflow-hidden rounded-3xl border border-electric-indigo/30 backdrop-blur-md bg-void-black/40 shadow-2xl shadow-electric-indigo/20">
+      <div className="relative h-full overflow-hidden rounded-3xl border border-neon-green/30 backdrop-blur-md bg-void-black/40 shadow-2xl shadow-neon-green/20">
         <motion.div
           className="absolute inset-0 flex flex-col gap-4 p-4"
           animate={{
@@ -97,7 +97,7 @@ export default function ContentFeed() {
 
               {item.type === 'stat' && (
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-electric-indigo mb-1">{item.content}</div>
+                  <div className="text-3xl font-bold text-neon-green mb-1">{item.content}</div>
                   <div className="text-xs text-white/60">{item.label}</div>
                 </div>
               )}

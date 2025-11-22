@@ -1,59 +1,325 @@
 import { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import TerminalWindow from './components/TerminalWindow';
+import BootSequence from './components/BootSequence';
+import InteractiveTerminal from './components/InteractiveTerminal';
 import NeuralNetworkBackground from './components/NeuralNetworkBackground';
-import HeroSection from './components/HeroSection';
 import NeuralPortInput from './components/NeuralPortInput';
 import SocialProofTicker from './components/SocialProofTicker';
 import CustomCursor from './components/CustomCursor';
 
+interface WindowState {
+  id: string;
+  title: string;
+  isMinimized: boolean;
+  isMaximized: boolean;
+  isClosed: boolean;
+  zIndex: number;
+}
+
 function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showBoot, setShowBoot] = useState(true);
+  const [windows, setWindows] = useState<WindowState[]>([
+    { id: 'hero', title: 'POLYMATH_OS.exe', isMinimized: false, isMaximized: false, isClosed: false, zIndex: 1 },
+    { id: 'features', title: 'FEATURES.txt', isMinimized: false, isMaximized: false, isClosed: false, zIndex: 2 },
+    { id: 'stats', title: 'STATS.log', isMinimized: false, isMaximized: false, isClosed: false, zIndex: 3 },
+    { id: 'signup', title: 'SIGNUP.exe', isMinimized: false, isMaximized: false, isClosed: false, zIndex: 4 },
+  ]);
+  const [maxZIndex, setMaxZIndex] = useState(4);
   const handleSignupRef = useRef<((email: string) => void) | null>(null);
 
+  const handleMinimize = (id: string) => {
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: true } : w));
+  };
+
+  const handleClose = (id: string) => {
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isClosed: true } : w));
+  };
+
+  const handleMaximize = (id: string) => {
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMaximized: !w.isMaximized } : w));
+  };
+
+  const handleFocus = (id: string) => {
+    const newZIndex = maxZIndex + 1;
+    setMaxZIndex(newZIndex);
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, zIndex: newZIndex } : w));
+  };
+
+  const handleRestore = (id: string) => {
+    const newZIndex = maxZIndex + 1;
+    setMaxZIndex(newZIndex);
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: false, zIndex: newZIndex } : w));
+  };
+
+  const getWindowState = (id: string) => windows.find(w => w.id === id);
+
   return (
-    <div className="min-h-screen bg-void-black text-white grain relative">
-      <CustomCursor />
-      <NeuralNetworkBackground isSubmitting={isSubmitting} />
+    <>
+      <AnimatePresence>
+        {showBoot && (
+          <BootSequence onComplete={() => setShowBoot(false)} />
+        )}
+      </AnimatePresence>
 
-      <main className="relative z-10">
-        <HeroSection onRegisterRef={(callback) => (handleSignupRef.current = callback)} />
+      {!showBoot && (
+        <div className="min-h-screen bg-void-black text-white grain relative overflow-hidden">
+          <CustomCursor />
+          <NeuralNetworkBackground isSubmitting={isSubmitting} />
 
-        <section id="signup-section" className="relative px-4 py-20 pb-32">
-          <div className="max-w-4xl mx-auto text-center space-y-12">
-            <div className="space-y-4">
-              <h2 className="text-3xl md:text-5xl font-bold text-white">
-                Join the <span className="text-neon-green">Neural Revolution</span>
-              </h2>
-              <p className="text-white/70 text-lg max-w-2xl mx-auto">
-                Early access is limited. Input your neural credentials to secure your position in the next generation of education.
-              </p>
-            </div>
+          {/* Gradient Vignette Overlay */}
+          <div className="fixed inset-0 z-0 pointer-events-none bg-gradient-radial from-transparent via-void-black/20 to-void-black/80" />
 
-            <NeuralPortInput
-              onSubmitStart={() => setIsSubmitting(true)}
-              onSubmitComplete={() => setIsSubmitting(false)}
-              onSignupSuccess={(email) => handleSignupRef.current?.(email)}
-            />
+          <main className="relative z-10 h-screen overflow-hidden p-4">
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 max-w-3xl mx-auto">
-              <div className="p-6 rounded-lg border border-neon-green/20 bg-neon-green/5 backdrop-blur-sm">
-                <div className="text-4xl font-bold text-neon-green mb-2">98%</div>
-                <div className="text-white/70 text-sm">Job Placement Rate</div>
+            {/* Hero Terminal - Top Left */}
+            {!getWindowState('hero')?.isClosed && !getWindowState('hero')?.isMinimized && (
+              <div className="absolute top-4 left-4 w-[45%] h-[45%]">
+                <TerminalWindow
+                  id="hero"
+                  title={getWindowState('hero')?.title || 'POLYMATH_OS.exe'}
+                  onMinimize={handleMinimize}
+                  onClose={handleClose}
+                  onMaximize={handleMaximize}
+                  onFocus={handleFocus}
+                  isMaximized={getWindowState('hero')?.isMaximized}
+                  zIndex={getWindowState('hero')?.zIndex}
+                  maxZIndex={maxZIndex}
+                  className="h-full"
+                >
+                  <InteractiveTerminal
+                    isFocused={getWindowState('hero')?.zIndex === maxZIndex}
+                    staticContent={
+                      <div className="space-y-4">
+                        {/* System Header */}
+                        <div className="flex items-center justify-between text-xs text-white/60 pb-3 border-b border-white/10">
+                          <div>$ POLYMATH_OS v2.0.1</div>
+                          <div className="flex gap-3">
+                            <span className="text-neon-green">ACTIVE: 1,247</span>
+                            <span className="text-strike-red animate-pulse">SPOTS: 23</span>
+                          </div>
+                        </div>
+
+                        {/* Main Headline */}
+                        <div>
+                          <div className="text-2xl md:text-3xl font-bold leading-tight">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-white">A{' '}</span>
+                              <motion.span
+                                className="text-white/40"
+                                initial={{ textDecorationColor: 'rgba(255, 0, 51, 0)' }}
+                                animate={{ textDecorationColor: 'rgba(255, 0, 51, 1)' }}
+                                transition={{ delay: 1, duration: 0.6 }}
+                                style={{
+                                  textDecoration: 'line-through',
+                                  textDecorationThickness: '3px',
+                                }}
+                              >
+                                4-YEAR DEGREE
+                              </motion.span>
+                            </div>
+                            <div className="text-white mt-1">
+                              IN <span className="text-neon-green">4 MONTHS</span>
+                            </div>
+                          </div>
+
+                          <div className="mt-4 text-sm text-white/70">
+                            <span className="text-neon-green">{'>'}</span> Don't pay for tuition; pay for the job offer.
+                          </div>
+                        </div>
+
+                        {/* CTA */}
+                        <button
+                          onClick={() => {
+                            const signupWindow = document.getElementById('signup-window');
+                            signupWindow?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          }}
+                          className="w-full px-6 py-2 bg-neon-green text-void-black font-bold rounded hover:bg-neon-green/90 transition-all text-sm"
+                        >
+                          [INITIALIZE_UPLINK]
+                        </button>
+                      </div>
+                    }
+                  />
+                </TerminalWindow>
               </div>
-              <div className="p-6 rounded-lg border border-electric-indigo/20 bg-electric-indigo/5 backdrop-blur-sm">
-                <div className="text-4xl font-bold text-electric-indigo mb-2">4.2x</div>
-                <div className="text-white/70 text-sm">Faster Than Traditional</div>
-              </div>
-              <div className="p-6 rounded-lg border border-neon-green/20 bg-neon-green/5 backdrop-blur-sm">
-                <div className="text-4xl font-bold text-neon-green mb-2">$127k</div>
-                <div className="text-white/70 text-sm">Average Starting Salary</div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </main>
+            )}
 
-      <SocialProofTicker />
-    </div>
+            {/* Features Terminal - Top Right */}
+            {!getWindowState('features')?.isClosed && !getWindowState('features')?.isMinimized && (
+              <div className="absolute top-4 right-4 w-[50%] h-[45%]">
+                <TerminalWindow
+                  id="features"
+                  title={getWindowState('features')?.title || 'FEATURES.txt'}
+                  onMinimize={handleMinimize}
+                  onClose={handleClose}
+                  onMaximize={handleMaximize}
+                  onFocus={handleFocus}
+                  isMaximized={getWindowState('features')?.isMaximized}
+                  zIndex={getWindowState('features')?.zIndex}
+                  maxZIndex={maxZIndex}
+                  className="h-full"
+                >
+                  <InteractiveTerminal
+                    isFocused={getWindowState('features')?.zIndex === maxZIndex}
+                    staticContent={
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-xs text-white/60 pb-2 border-b border-white/10">
+                          <span className="text-neon-green">$</span>
+                          <span>cat features.txt</span>
+                        </div>
+
+                        {[
+                          { title: 'AI_CURRICULUM', desc: 'Adapts to your brain' },
+                          { title: 'JOB_GUARANTEE', desc: '100% refund policy' },
+                          { title: 'LIVE_MENTORS', desc: '24/7 expert access' },
+                          { title: 'PORTFOLIO', desc: '5 production projects' }
+                        ].map((feature, index) => (
+                          <div key={index} className="text-xs">
+                            <div className="flex items-center gap-2">
+                              <span className="text-neon-green">[✓]</span>
+                              <span className="text-white font-bold">{feature.title}</span>
+                            </div>
+                            <div className="ml-5 text-white/60">└─ {feature.desc}</div>
+                          </div>
+                        ))}
+                      </div>
+                    }
+                  />
+                </TerminalWindow>
+              </div>
+            )}
+
+            {/* Stats Terminal - Bottom Left */}
+            {!getWindowState('stats')?.isClosed && !getWindowState('stats')?.isMinimized && (
+              <div className="absolute bottom-4 left-4 w-[45%] h-[45%]">
+                <TerminalWindow
+                  id="stats"
+                  title={getWindowState('stats')?.title || 'STATS.log'}
+                  onMinimize={handleMinimize}
+                  onClose={handleClose}
+                  onMaximize={handleMaximize}
+                  onFocus={handleFocus}
+                  isMaximized={getWindowState('stats')?.isMaximized}
+                  zIndex={getWindowState('stats')?.zIndex}
+                  maxZIndex={maxZIndex}
+                  className="h-full"
+                >
+                  <InteractiveTerminal
+                    isFocused={getWindowState('stats')?.zIndex === maxZIndex}
+                    staticContent={
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-xs text-white/60 pb-2 border-b border-white/10">
+                          <span className="text-neon-green">$</span>
+                          <span>tail -f stats.log</span>
+                        </div>
+
+                        <div className="text-xs space-y-2 text-white/70">
+                          <div className="flex justify-between">
+                            <span>Job Placement:</span>
+                            <span className="text-neon-green font-bold">98%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Avg Salary:</span>
+                            <span className="text-neon-green font-bold">$127,000</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Completion Rate:</span>
+                            <span className="text-neon-green font-bold">94%</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Active Students:</span>
+                            <span className="text-neon-green font-bold">1,247</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Learning Speed:</span>
+                            <span className="text-neon-green font-bold">4.2x faster</span>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  />
+                </TerminalWindow>
+              </div>
+            )}
+
+            {/* Signup Terminal - Bottom Right */}
+            {!getWindowState('signup')?.isClosed && !getWindowState('signup')?.isMinimized && (
+              <div id="signup-window" className="absolute bottom-4 right-4 w-[50%] h-[45%]">
+                <TerminalWindow
+                  id="signup"
+                  title={getWindowState('signup')?.title || 'SIGNUP.exe'}
+                  onMinimize={handleMinimize}
+                  onClose={handleClose}
+                  onMaximize={handleMaximize}
+                  onFocus={handleFocus}
+                  isMaximized={getWindowState('signup')?.isMaximized}
+                  zIndex={getWindowState('signup')?.zIndex}
+                  className="h-full"
+                >
+                  <div className="p-6 h-full flex flex-col">
+                    <div className="space-y-4 flex-1">
+                      <div className="flex items-center gap-2 text-xs text-white/60 pb-2 border-b border-white/10">
+                        <span className="text-neon-green">$</span>
+                        <span>sudo access_early_beta</span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-lg font-bold text-white mb-2">
+                          Join the <span className="text-neon-green">Neural Revolution</span>
+                        </h3>
+                        <p className="text-xs text-white/60 mb-3">
+                          Limited spots. Secure your position now.
+                        </p>
+                      </div>
+
+                      <NeuralPortInput
+                        onSubmitStart={() => setIsSubmitting(true)}
+                        onSubmitComplete={() => setIsSubmitting(false)}
+                        onSignupSuccess={(email) => handleSignupRef.current?.(email)}
+                      />
+
+                      {/* Mini Stats */}
+                      <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/10">
+                        {[
+                          { value: '98%', label: 'Placement' },
+                          { value: '4.2x', label: 'Faster' },
+                          { value: '$127k', label: 'Avg Salary' }
+                        ].map((stat, index) => (
+                          <div key={index} className="text-center">
+                            <div className="text-lg font-bold text-neon-green">{stat.value}</div>
+                            <div className="text-[10px] text-white/50">{stat.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </TerminalWindow>
+              </div>
+            )}
+
+            {/* Taskbar for minimized windows */}
+            {windows.some(w => w.isMinimized) && (
+              <div className="fixed bottom-0 left-0 right-0 bg-void-black/90 border-t border-white/20 p-2 flex gap-2 z-50">
+                {windows.filter(w => w.isMinimized).map(window => (
+                  <button
+                    key={window.id}
+                    onClick={() => handleRestore(window.id)}
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-xs font-mono text-white/80 transition-colors"
+                  >
+                    {window.title}
+                  </button>
+                ))}
+              </div>
+            )}
+
+          </main>
+
+          <SocialProofTicker />
+        </div>
+      )}
+    </>
   );
 }
 

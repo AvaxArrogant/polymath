@@ -62,6 +62,9 @@ export default {
       fontFamily: {
         mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace'],
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
+      },
     },
   },
   plugins: [],
