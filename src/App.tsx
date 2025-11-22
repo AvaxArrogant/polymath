@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import NeuralNetworkBackground from './components/NeuralNetworkBackground';
 import HeroSection from './components/HeroSection';
 import NeuralPortInput from './components/NeuralPortInput';
@@ -7,6 +7,7 @@ import CustomCursor from './components/CustomCursor';
 
 function App() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleSignupRef = useRef<((email: string) => void) | null>(null);
 
   return (
     <div className="min-h-screen bg-void-black text-white grain relative">
@@ -14,9 +15,9 @@ function App() {
       <NeuralNetworkBackground isSubmitting={isSubmitting} />
 
       <main className="relative z-10">
-        <HeroSection />
+        <HeroSection onRegisterRef={(callback) => (handleSignupRef.current = callback)} />
 
-        <section className="relative px-4 py-20 pb-32">
+        <section id="signup-section" className="relative px-4 py-20 pb-32">
           <div className="max-w-4xl mx-auto text-center space-y-12">
             <div className="space-y-4">
               <h2 className="text-3xl md:text-5xl font-bold text-white">
@@ -30,6 +31,7 @@ function App() {
             <NeuralPortInput
               onSubmitStart={() => setIsSubmitting(true)}
               onSubmitComplete={() => setIsSubmitting(false)}
+              onSignupSuccess={(email) => handleSignupRef.current?.(email)}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-12 max-w-3xl mx-auto">

@@ -1,7 +1,12 @@
 import { motion } from 'framer-motion';
 import ContentFeed from './ContentFeed';
+import LiveStats from './LiveStats';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onRegisterRef?: (callback: (email: string) => void) => void;
+}
+
+export default function HeroSection({ onRegisterRef }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center px-4 py-20">
       <div className="max-w-7xl mx-auto w-full">
@@ -84,24 +89,57 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
-            whileHover={{ scale: 1.02 }}
-            className="flex justify-center lg:justify-end"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
           >
+            <LiveStats onRegisterRef={onRegisterRef} />
+
             <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
+              className="flex justify-center mt-8 cursor-pointer"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, y: [0, 10, 0] }}
+              transition={{ delay: 1.2, duration: 2, repeat: Infinity }}
+              onClick={() => document.getElementById('signup-section')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              <ContentFeed />
+              <div className="flex flex-col items-center gap-2 text-neon-green/50 hover:text-neon-green transition-colors">
+                <span className="text-xs font-mono tracking-widest">INITIALIZE_UPLINK</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
+                </svg>
+              </div>
             </motion.div>
           </motion.div>
         </div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          whileHover={{ scale: 1.02 }}
+          className="flex justify-center lg:justify-end"
+        >
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          >
+            <ContentFeed />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
