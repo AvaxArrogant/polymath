@@ -108,7 +108,7 @@ export default function NeuralPortInput({ onSubmitStart, onSubmitComplete, onSig
         {/* Terminal Prompt Line */}
         <div className="flex items-center gap-3 text-lg">
           <span className="text-neon-green select-none">root@polymath:~$</span>
-          <span className="text-white/60 select-none">init_uplink</span>
+          <span className="text-white/60 select-none">add_email</span>
           <div className="flex-1 relative">
             <input
               ref={inputRef}
