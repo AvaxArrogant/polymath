@@ -141,7 +141,7 @@ export default function InteractiveTerminal({
             {/* Terminal Output */}
             <div
                 ref={terminalRef}
-                className="flex-1 overflow-y-auto overflow-x-hidden p-4 font-mono text-sm space-y-2"
+                className="flex-1 overflow-y-auto overflow-x-hidden p-6 font-mono text-sm space-y-2"
                 onClick={() => inputRef.current?.focus()}
             >
                 <AnimatePresence initial={false}>

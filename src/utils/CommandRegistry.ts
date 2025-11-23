@@ -1,4 +1,4 @@
-import { fileSystem, getCurrentPath } from './FileSystem';
+import { getCurrentPath } from './FileSystem';
 import { handleEasterEgg } from './EasterEggs';
 
 export interface CommandOutput {
@@ -157,8 +157,15 @@ Type 'secrets' to discover Easter eggs 👀
             return { text: '' };
         }
 
-        const newPath = this.currentPath + '/' + dir;
-        const target = getCurrentPath(newPath);
+        // Get current directory
+        const current = getCurrentPath(this.currentPath);
+
+        if (!current || current.type !== 'directory') {
+            return { text: `cd: current path is not a directory`, type: 'error' };
+        }
+
+        // Check if target exists in current directory's contents
+        const target = current.contents?.[dir];
 
         if (!target) {
             return { text: `cd: ${dir}: No such file or directory`, type: 'error' };
@@ -168,7 +175,8 @@ Type 'secrets' to discover Easter eggs 👀
             return { text: `cd: ${dir}: Not a directory`, type: 'error' };
         }
 
-        this.currentPath = newPath;
+        // Update path
+        this.currentPath = this.currentPath + '/' + dir;
         return { text: '' };
     }
 
@@ -221,7 +229,7 @@ Job Guarantee: Active ✓`
 
 Neural Sync: OPTIMAL
 System Status: ONLINE
-Next Cohort: 6 days`
+Beta Launch: Q1 2026`
         };
     }
 
@@ -252,43 +260,44 @@ AI Engine: GPT-5 Enhanced`
         return {
             text: `Opening signup terminal...
 
-✓ Redirecting to application portal
-✓ Loading neural credentials form
+✓ Redirecting to early access portal
+✓ Loading beta registration form
 
-Complete the signup to secure your spot!
-Only 23 spots remaining in next cohort.`,
+Join the waitlist for exclusive early access!
+Only 50 beta spots available for Q1 2026 launch.`,
             type: 'success'
         };
     }
 
     private stats(): CommandOutput {
         return {
-            text: `POLYMATH REAL-TIME STATISTICS
+            text: `POLYMATH EARLY ACCESS STATISTICS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 Performance Metrics:
-   Job Placement Rate:      98%
-   Avg Starting Salary:     $127,000
-   Completion Rate:         94%
-   Student Satisfaction:    4.9/5.0
+📊 Launch Metrics:
+   Waitlist Signups:        847
+   Beta Testers:            50
+   Early Access Status:     Active
+   Launch Target:           Q1 2026
    
-⚡ Speed Metrics:
-   Time to Employment:      2.3 months
-   Learning Speed:          4.2x faster
-   Course Completion:       16 weeks avg
+⚡ Platform Status:
+   Curriculum Modules:      47
+   Partner Companies:       12
+   Platform Uptime:         99.9%
+   Development Stage:       Beta
    
 👥 Community:
-   Active Students:         1,247
-   Alumni Network:          8,932
-   Job Offers Secured:      892
-   Partner Companies:       156
+   Discord Members:         1,234
+   GitHub Stars:            892
+   Newsletter Subscribers:  2,156
+   Social Media:            5,432
    
-💰 Financial:
-   Average ROI:             847%
-   Tuition Model:           Pay After Hired
-   Refund Rate:             <2%
+💡 Interest Metrics:
+   Interest Score:          4.8/5.0
+   Beta Applications:       3,247
+   Acceptance Rate:         1.5%
    
-Run 'apply' to join these statistics! 🚀`
+Join the waitlist to be part of the launch! 🚀`
         };
     }
 

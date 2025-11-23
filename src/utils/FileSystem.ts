@@ -39,17 +39,17 @@ Run 'apply' to start your journey.
             },
             'stats.log': {
                 type: 'file',
-                content: `POLYMATH STATISTICS
+                content: `POLYMATH EARLY ACCESS STATISTICS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Job Placement Rate:     98%
-Average Starting Salary: $127,000
-Completion Rate:        94%
-Student Satisfaction:   4.9/5.0
-Time to Employment:     2.3 months
-Active Students:        1,247
-Courses Completed:      8,932
-Job Offers Secured:     892`
+Waitlist Signups:        847
+Beta Testers:            50
+Early Access:            Active
+Launch Target:           Q1 2026
+Interest Score:          4.8/5.0
+Partner Companies:       12
+Curriculum Modules:      47
+Platform Uptime:         99.9%`
             },
             'secrets': {
                 type: 'directory',

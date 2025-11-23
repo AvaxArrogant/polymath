@@ -96,8 +96,8 @@ function App() {
                         <div className="flex items-center justify-between text-xs text-white/60 pb-3 border-b border-white/10">
                           <div>$ POLYMATH_OS v2.0.1</div>
                           <div className="flex gap-3">
-                            <span className="text-neon-green">ACTIVE: 1,247</span>
-                            <span className="text-strike-red animate-pulse">SPOTS: 23</span>
+                            <span className="text-neon-green">WAITLIST: 847</span>
+                            <span className="text-strike-red animate-pulse">BETA SPOTS: 50</span>
                           </div>
                         </div>
 
@@ -217,24 +217,24 @@ function App() {
 
                         <div className="text-xs space-y-2 text-white/70">
                           <div className="flex justify-between">
-                            <span>Job Placement:</span>
-                            <span className="text-neon-green font-bold">98%</span>
+                            <span>Waitlist Signups:</span>
+                            <span className="text-neon-green font-bold">847</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Avg Salary:</span>
-                            <span className="text-neon-green font-bold">$127,000</span>
+                            <span>Beta Testers:</span>
+                            <span className="text-neon-green font-bold">50</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Completion Rate:</span>
-                            <span className="text-neon-green font-bold">94%</span>
+                            <span>Early Access:</span>
+                            <span className="text-neon-green font-bold">Active</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Active Students:</span>
-                            <span className="text-neon-green font-bold">1,247</span>
+                            <span>Launch Status:</span>
+                            <span className="text-neon-green font-bold">Q1 2026</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Learning Speed:</span>
-                            <span className="text-neon-green font-bold">4.2x faster</span>
+                            <span>Interest Score:</span>
+                            <span className="text-neon-green font-bold">4.8/5.0</span>
                           </div>
                         </div>
                       </div>
@@ -283,9 +283,9 @@ function App() {
                       {/* Mini Stats */}
                       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/10">
                         {[
-                          { value: '98%', label: 'Placement' },
-                          { value: '4.2x', label: 'Faster' },
-                          { value: '$127k', label: 'Avg Salary' }
+                          { value: '847', label: 'Waitlist' },
+                          { value: '50', label: 'Beta Spots' },
+                          { value: 'Q1 26', label: 'Launch' }
                         ].map((stat, index) => (
                           <div key={index} className="text-center">
                             <div className="text-lg font-bold text-neon-green">{stat.value}</div>
