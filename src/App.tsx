@@ -50,7 +50,7 @@ function App() {
   const handleRestore = (id: string) => {
     const newZIndex = maxZIndex + 1;
     setMaxZIndex(newZIndex);
-    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: false, zIndex: newZIndex } : w));
+    setWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: false, isClosed: false, zIndex: newZIndex } : w));
   };
 
   const getWindowState = (id: string) => windows.find(w => w.id === id);
@@ -74,7 +74,7 @@ function App() {
           <main className="relative z-10 h-screen overflow-hidden p-4">
 
             {/* Hero Terminal - Top Left */}
-            {!getWindowState('hero')?.isClosed && !getWindowState('hero')?.isMinimized && (
+            {!getWindowState('hero')?.isClosed && (
               <div className="absolute top-4 left-4 w-[45%] h-[45%]">
                 <TerminalWindow
                   id="hero"
@@ -84,6 +84,7 @@ function App() {
                   onMaximize={handleMaximize}
                   onFocus={handleFocus}
                   isMaximized={getWindowState('hero')?.isMaximized}
+                  isMinimized={getWindowState('hero')?.isMinimized}
                   zIndex={getWindowState('hero')?.zIndex}
                   maxZIndex={maxZIndex}
                   className="h-full"
@@ -147,7 +148,7 @@ function App() {
             )}
 
             {/* Features Terminal - Top Right */}
-            {!getWindowState('features')?.isClosed && !getWindowState('features')?.isMinimized && (
+            {!getWindowState('features')?.isClosed && (
               <div className="absolute top-4 right-4 w-[50%] h-[45%]">
                 <TerminalWindow
                   id="features"
@@ -157,6 +158,7 @@ function App() {
                   onMaximize={handleMaximize}
                   onFocus={handleFocus}
                   isMaximized={getWindowState('features')?.isMaximized}
+                  isMinimized={getWindowState('features')?.isMinimized}
                   zIndex={getWindowState('features')?.zIndex}
                   maxZIndex={maxZIndex}
                   className="h-full"
@@ -192,7 +194,7 @@ function App() {
             )}
 
             {/* Stats Terminal - Bottom Left */}
-            {!getWindowState('stats')?.isClosed && !getWindowState('stats')?.isMinimized && (
+            {!getWindowState('stats')?.isClosed && (
               <div className="absolute bottom-4 left-4 w-[45%] h-[45%]">
                 <TerminalWindow
                   id="stats"
@@ -202,6 +204,7 @@ function App() {
                   onMaximize={handleMaximize}
                   onFocus={handleFocus}
                   isMaximized={getWindowState('stats')?.isMaximized}
+                  isMinimized={getWindowState('stats')?.isMinimized}
                   zIndex={getWindowState('stats')?.zIndex}
                   maxZIndex={maxZIndex}
                   className="h-full"
@@ -245,7 +248,7 @@ function App() {
             )}
 
             {/* Signup Terminal - Bottom Right */}
-            {!getWindowState('signup')?.isClosed && !getWindowState('signup')?.isMinimized && (
+            {!getWindowState('signup')?.isClosed && (
               <div id="signup-window" className="absolute bottom-4 right-4 w-[50%] h-[45%]">
                 <TerminalWindow
                   id="signup"
@@ -255,7 +258,9 @@ function App() {
                   onMaximize={handleMaximize}
                   onFocus={handleFocus}
                   isMaximized={getWindowState('signup')?.isMaximized}
+                  isMinimized={getWindowState('signup')?.isMinimized}
                   zIndex={getWindowState('signup')?.zIndex}
+                  maxZIndex={maxZIndex}
                   className="h-full"
                 >
                   <div className="p-6 h-full flex flex-col">
@@ -299,15 +304,16 @@ function App() {
               </div>
             )}
 
-            {/* Taskbar for minimized windows */}
-            {windows.some(w => w.isMinimized) && (
-              <div className="fixed bottom-0 left-0 right-0 bg-void-black/90 border-t border-white/20 p-2 flex gap-2 z-50">
-                {windows.filter(w => w.isMinimized).map(window => (
+            {/* Taskbar for closed windows - positioned above live feed */}
+            {windows.some(w => w.isClosed) && (
+              <div className="fixed bottom-20 left-0 right-0 bg-void-black/90 border-t border-white/20 p-2 flex gap-2 z-50 backdrop-blur-sm">
+                {windows.filter(w => w.isClosed).map(window => (
                   <button
                     key={window.id}
                     onClick={() => handleRestore(window.id)}
-                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-xs font-mono text-white/80 transition-colors"
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded text-xs font-mono text-white/80 transition-colors flex items-center gap-2"
                   >
+                    <span className="w-2 h-2 rounded-full bg-neon-green"></span>
                     {window.title}
                   </button>
                 ))}

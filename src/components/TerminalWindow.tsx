@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { motion, useDragControls } from 'framer-motion';
+import { motion, useDragControls, AnimatePresence } from 'framer-motion';
 
 interface TerminalWindowProps {
     id: string;
@@ -12,6 +12,7 @@ interface TerminalWindowProps {
     onMaximize?: (id: string) => void;
     onFocus?: (id: string) => void;
     isMaximized?: boolean;
+    isMinimized?: boolean;
     zIndex?: number;
     maxZIndex?: number;
 }
@@ -27,6 +28,7 @@ export default function TerminalWindow({
     onMaximize,
     onFocus,
     isMaximized = false,
+    isMinimized = false,
     zIndex = 1,
     maxZIndex = 1
 }: TerminalWindowProps) {
@@ -54,7 +56,7 @@ export default function TerminalWindow({
 
     return (
         <motion.div
-            drag={!isMaximized}
+            drag={!isMaximized && !isMinimized}
             dragControls={dragControls}
             dragMomentum={false}
             dragElastic={0}
@@ -65,12 +67,12 @@ export default function TerminalWindow({
                 scale: isMaximized ? 1 : 1,
                 x: isMaximized ? 0 : undefined,
                 width: isMaximized ? '100vw' : undefined,
-                height: isMaximized ? '100vh' : undefined,
+                height: isMaximized ? '100vh' : isMinimized ? 'auto' : undefined,
             }}
             transition={{ duration: 0.3 }}
             className={`bg-void-black/95 rounded-lg overflow-hidden shadow-2xl backdrop-blur-sm transition-all ${className} ${isFocused
-                    ? 'border-2 border-neon-green/50'
-                    : 'border border-white/20'
+                ? 'border-2 border-neon-green/50'
+                : 'border border-white/20'
                 }`}
             style={{
                 position: isMaximized ? 'fixed' : 'relative',
@@ -85,7 +87,7 @@ export default function TerminalWindow({
         >
             {/* Terminal Header */}
             <div
-                onPointerDown={(e) => !isMaximized && dragControls.start(e)}
+                onPointerDown={(e) => !isMaximized && !isMinimized && dragControls.start(e)}
                 className="bg-white/5 px-4 py-2 border-b border-white/10 flex items-center justify-between select-none cursor-grab active:cursor-grabbing"
             >
                 <div className="flex gap-2">
@@ -109,10 +111,22 @@ export default function TerminalWindow({
                 <div className="w-16" /> {/* Spacer */}
             </div>
 
-            {/* Terminal Content */}
-            <div className="font-mono text-sm h-full">
-                {children}
-            </div>
+            {/* Terminal Content - Hidden when minimized */}
+            <AnimatePresence>
+                {!isMinimized && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="font-mono text-sm overflow-hidden"
+                    >
+                        <div className="h-full">
+                            {children}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </motion.div>
     );
 }
